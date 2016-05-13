@@ -128,10 +128,19 @@ void DelayAudioProcessor::processBlock (AudioSampleBuffer& buffer, MidiBuffer& m
 
     // This is the place where you'd normally do the guts of your plugin's
     // audio processing...
+    
     for (int channel = 0; channel < totalNumInputChannels; ++channel)
     {
-        float* channelData = buffer.getWritePointer (channel);
-
+        const float* channelData = buffer.getReadPointer (channel);
+                
+        dataArray[sample] = *channelData;
+        
+        
+        buffer.addSample(channel, sample, dataArray[sample - 50]);
+        sample++;
+        
+        if(sample == 150)
+            sample = 0;
         // ..do something to the data...
     }
 }
