@@ -58,8 +58,17 @@ public:
 
 private:
     
-    float dataArray[150];
-    int sample;
+    float dataArray[512];
+    float channelArray[512];
+    float* array[512];
+    
+    int bufferSize;
+    int sample = 0;
+    bool startDelay = false;    
+    int currentSample = 0;
+    float newData;
+    const float* modData;
+    
     //==============================================================================
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (DelayAudioProcessor)
 };

@@ -131,17 +131,33 @@ void DelayAudioProcessor::processBlock (AudioSampleBuffer& buffer, MidiBuffer& m
     
     for (int channel = 0; channel < totalNumInputChannels; ++channel)
     {
-        const float* channelData = buffer.getReadPointer (channel);
+        const float* channelData = buffer.getReadPointer(channel);
+        bufferSize = buffer.getNumSamples() - 1;
+        
                 
         dataArray[sample] = *channelData;
+        channelArray[sample] = *channelData;
+        
+        if(sample >=50)
+            startDelay = true;
+        
+        if(startDelay == true)
+        {
+            newData = dataArray[sample - 50] + channelArray[sample];
+            array[sample] = &newData;
+            buffer.addSample(channel, sample, newData);
+            
+        }
+        
+        //modData = buffer.getReadPointer(channel);
         
         
-        buffer.addSample(channel, sample, dataArray[sample - 50]);
         sample++;
         
-        if(sample == 150)
+        if(sample == bufferSize)
             sample = 0;
         // ..do something to the data...
+        //currentSample++;
     }
 }
 
