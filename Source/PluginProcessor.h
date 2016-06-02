@@ -61,11 +61,12 @@ private:
     float* channelArray;
     float data;
     
+    float delayData = 0;
     int bufferSize;
     int sample = 0;
     bool startDelay = false;    
     int currentSample = 0;
-    float newData;
+    float newData[512];
     float modData[512];
     
     //==============================================================================
