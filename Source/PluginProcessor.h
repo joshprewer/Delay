@@ -60,14 +60,16 @@ private:
     
     float* channelArray;
     float data;
+    int delayPosition;
     
-    float delayData = 0;
+    AudioSampleBuffer delayBuffer;
+    AudioSampleBuffer feedbackBuffer;
+    float outPut = 0;
+    float lastSample = 0;
+    
     int bufferSize;
-    int sample = 0;
-    bool startDelay = false;    
-    int currentSample = 0;
-    float newData[512];
-    float modData[512];
+    float inputData[512];
+    float outputData[512];
     
     //==============================================================================
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (DelayAudioProcessor)

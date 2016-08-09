@@ -32,7 +32,7 @@ void DelayAudioProcessorEditor::paint (Graphics& g)
 
     g.setColour (Colours::black);
     g.setFont (15.0f);
-    g.drawFittedText ("Hello World, Its Josh!", getLocalBounds(), Justification::centred, 1);
+    g.drawFittedText ("wubwubwub", getLocalBounds(), Justification::centred, 1);
 }
 
 void DelayAudioProcessorEditor::resized()

@@ -116,6 +116,10 @@ void DelayAudioProcessor::processBlock (AudioSampleBuffer& buffer, MidiBuffer& m
 {
     const int totalNumInputChannels  = getTotalNumInputChannels();
     const int totalNumOutputChannels = getTotalNumOutputChannels();
+    const int bufferSize = buffer.getNumSamples();
+    
+    int dp = 0;
+    int delaySamples = (int)(44100) ;
 
     // In case we have more outputs than inputs, this code clears any output
     // channels that didn't contain input data, (because these aren't
@@ -129,39 +133,38 @@ void DelayAudioProcessor::processBlock (AudioSampleBuffer& buffer, MidiBuffer& m
     // This is the place where you'd normally do the guts of your plugin's
     // audio processing...
     
+    delayBuffer.setSize(2, delaySamples);
+    //feedbackBuffer.setSize(2, delaySamples);
     
-    const int bufferSize = buffer.getNumSamples();
     float dataArray[bufferSize];
     
     for (int channel = 0; channel < totalNumInputChannels; ++channel)
     {
         float* channelData = buffer.getWritePointer(channel);
-        const float* channelWatch = buffer.getReadPointer(channel);
+        float* delayData = delayBuffer.getWritePointer((jmin (channel, delayBuffer.getNumChannels() - 1)));
+       // float* output = feedbackBuffer.getWritePointer((jmin(channel, feedbackBuffer.getNumSamples() - 1)));
+        dp = delayPosition;
         
         
         
-        dataArray[sample] = *channelData;
-        modData[sample]= dataArray[sample];
-        
-        
-        
-        if(sample >= 500)
-            startDelay = true;
-        
-        if(startDelay == true)
+        for (int i = 0; i < bufferSize; i++)
         {
-            *channelData = modData[sample - 499];
-            data = *channelData;
+            inputData[i] = channelData[i];
+            
+            float in = channelData[i];
+            channelData[i] = delayData[dp];
+            delayData[dp] = in;
+            //float out = channelData[i];
+            //output[dp] = out;
+            
+            outputData[i] = channelData[i];
+            
+            if (dp++ > delayBuffer.getNumSamples())
+                dp = 0;
         }
         
-        newData[sample] = *buffer.getReadPointer(channel);
-        sample++;
-        
-        if(sample == bufferSize)
-            sample = 0;
-        // ..do something to the data...
-        //currentSample++;
     }
+    delayPosition = dp;
 }
 
 //==============================================================================
